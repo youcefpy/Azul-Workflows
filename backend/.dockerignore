@@ -1,0 +1,7 @@
+public/
+__pycache__/
+venv/
+package-lock.json
+package.json
+server.js
+LICENSE
