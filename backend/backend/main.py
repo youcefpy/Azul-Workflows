@@ -1,7 +1,9 @@
-from fastapi import FastAPI, BackgroundTasks, Depends, Header, HTTPException, status
+from fastapi import BackgroundTasks, Depends, FastAPI, Header, HTTPException, status
+from fastapi.middleware.cors import CORSMiddleware
+
 from backend import crud, schemas
 from backend.config import settings
-from fastapi.middleware.cors import CORSMiddleware
+from backend.database import SessionLocal
 from backend.email import send_email_notification
 
 app = FastAPI()
@@ -13,6 +15,11 @@ app.add_middleware(
     allow_methods=["*"], 
     allow_headers=["*"],
 )
+
+async def get_db():
+    
+    async with SessionLocal() as session:
+        yield session
 
 
 @app.post("/customers", response_model=schemas.CustomerOut)

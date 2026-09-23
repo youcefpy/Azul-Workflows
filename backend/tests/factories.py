@@ -8,17 +8,16 @@ Documentation on Fuzzy Attributes:
     https://factoryboy.readthedocs.io/en/stable/fuzzy.html
 
 """
+
 import factory
-from datetime import date
-from factory.fuzzy import FuzzyChoice, FuzzyDate
-from backend.models import Customer
+from backend.schemas import CustomerOut
+from factory.fuzzy import FuzzyChoice
 
 
 class CustomerFactory(factory.Factory):
     """ Creates fake Accounts """
-
     class Meta:
-        model = Customer
+        model = CustomerOut
 
     id = factory.Sequence(lambda n: n)
     name = factory.Faker("name")

@@ -1,7 +1,7 @@
 # run once only
 import asyncio
-from backend.database import engine, Base
-from backend import models
+
+from backend.database import Base, engine
 
 
 async def init_models():
