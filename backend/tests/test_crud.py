@@ -1,4 +1,4 @@
-from backend.crud import create_customer, get_customers
+from backend.crud import create_customer, get_customers, get_customer
 
 from .factories import CustomerFactory
 
@@ -19,8 +19,20 @@ class TestCrudCustomer:
         assert customer.service_interest == data.service_interest
         assert customer.message == data.message
 
-    async def test_get_customer(self,db):
+    async def test_get_customers(self,db):
         list_customers = [await create_customer(CustomerFactory()) for _ in range(10)]
         assert list_customers is not None
         customers = await get_customers()
         assert len(customers) == 10
+
+    async def test_get_customer(self,db):
+        data = CustomerFactory()
+        customer_create = await create_customer(data)
+        id = customer_create.id
+        customer = await get_customer(id)
+        assert customer.id is not None
+        assert customer.id == data.id
+        assert customer.name == data.name
+        assert customer.email == data.email
+        assert customer.phone_number == data.phone_number
+

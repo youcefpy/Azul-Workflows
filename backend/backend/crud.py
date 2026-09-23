@@ -18,3 +18,10 @@ async def get_customers() -> list[Customer]:
     async with SessionLocal() as session:
         result = await session.execute(select(Customer))
         return result.scalars().all()
+
+async def get_customer(id:int) -> Customer:
+    async with SessionLocal() as session:
+        result = await session.execute(
+            select(Customer).where(Customer.id==id)
+            )
+        return result.scalar_one_or_none()
