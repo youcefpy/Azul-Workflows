@@ -1,3 +1,5 @@
+from collections.abc import Sequence
+
 from sqlalchemy.future import select
 
 from backend.database import SessionLocal
@@ -14,12 +16,12 @@ async def create_customer(data: CustomerCreate) -> Customer:
         return customer
 
 
-async def get_customers() -> list[Customer]:
+async def get_customers() -> Sequence[Customer]:
     async with SessionLocal() as session:
         result = await session.execute(select(Customer))
         return result.scalars().all()
 
-async def get_customer(id:int) -> Customer:
+async def get_customer(id: int) -> Customer | None:
     async with SessionLocal() as session:
         result = await session.execute(
             select(Customer).where(Customer.id==id)
