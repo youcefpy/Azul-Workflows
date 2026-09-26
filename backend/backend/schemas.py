@@ -17,3 +17,4 @@ class CustomerOut(CustomerCreate):
 
     class Config:
         orm_mode = True
+        

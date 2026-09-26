@@ -6,7 +6,7 @@ from backend.email import send_email_notification
 
 router = APIRouter()
 
-@router.post("/customers", response_model=schemas.CustomerOut)
+@router.post("/customers", response_model=schemas.CustomerOut, status_code=status.HTTP_201_CREATED)
 async def create_customer(customer: schemas.CustomerCreate, background_tasks: BackgroundTasks):
     new_customer = await crud.create_customer(customer)
     background_tasks.add_task(send_email_notification, new_customer, True)  # customer email
@@ -26,3 +26,7 @@ async def verify_api_key(x_api_key: str = Header(...)):
 @router.get("/customers", response_model=list[schemas.CustomerOut], dependencies=[Depends(verify_api_key)])
 async def list_customers():
     return await crud.get_customers()
+
+@router.get('/customer/{id}', response_model=schemas.CustomerOut, dependencies=[Depends(verify_api_key)])
+async def get_customer(id: int):
+    return await crud.get_customer(id)

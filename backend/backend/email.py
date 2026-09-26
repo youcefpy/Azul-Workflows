@@ -1,8 +1,9 @@
 import smtplib
-from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from backend.models import Customer
+from email.mime.text import MIMEText
+
 from backend.config import settings
+from backend.models import Customer
 
 
 def customer_email(customer: Customer) -> str:

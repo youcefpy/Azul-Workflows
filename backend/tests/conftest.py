@@ -6,12 +6,17 @@ from backend.database import Base
 from backend.main import app, get_db
 from fastapi.testclient import TestClient
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
+from sqlalchemy.pool import NullPool
+
+from backend import (
+    models,  # noqa: F401  # Ensure model tables are registered in Base.metadata.
+)
 
 
 @pytest_asyncio.fixture
 async def engine():
     """Create DB engine"""
-    engine = create_async_engine(settings.DATABASE_URL, echo=False)
+    engine = create_async_engine(settings.DATABASE_URL, echo=False, poolclass=NullPool)
     yield engine
     await engine.dispose()
 

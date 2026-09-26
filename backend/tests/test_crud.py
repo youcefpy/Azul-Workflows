@@ -1,4 +1,4 @@
-from backend.crud import create_customer, get_customers, get_customer
+from backend.crud import create_customer, get_customer, get_customers
 
 from .factories import CustomerFactory
 
