@@ -15,7 +15,7 @@ async def create_customer(customer: schemas.CustomerCreate, background_tasks: Ba
     return new_customer
 
 
-async def verify_api_key(x_api_key: str = Header(...)):
+async def verify_api_key(x_api_key: str = Header(...))->None:
     if x_api_key != settings.ADMIN_API_KEY:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

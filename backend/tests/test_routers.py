@@ -1,6 +1,8 @@
-from backend.config import settings
-from fastapi import status
+import pytest
 
+from backend.config import settings
+from fastapi import HTTPException, status
+from backend.routers import verify_api_key
 class TestRouters:
     api_key = "test-admin-api-key"
     @staticmethod
@@ -13,7 +15,19 @@ class TestRouters:
             "service_interest": "marketing",
             "message": "Need an agent for marketing services.",
         }
-
+    
+    async def test_api_key_valid(self,client):
+         settings.ADMIN_API_KEY="admin123"
+         result = await verify_api_key('admin123')
+         assert result is None
+    
+    async def test_api_key_invalide(self,client):
+        settings.ADMIN_API_KEY="admin123"
+        with pytest.raises(HTTPException) as exc_info:
+            await verify_api_key(x_api_key="wrong-key")
+        assert exc_info.value.status_code == status.HTTP_401_UNAUTHORIZED
+        assert "Invalid API Key" in exc_info.value.detail 
+    
     def test_create_customer(self, client):
         response = client.post("/customers", json=self.customer_data())
 
