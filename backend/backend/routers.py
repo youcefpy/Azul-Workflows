@@ -30,3 +30,12 @@ async def list_customers():
 @router.get('/customer/{id}', response_model=schemas.CustomerOut, dependencies=[Depends(verify_api_key)])
 async def get_customer(id: int):
     return await crud.get_customer(id)
+
+@router.delete(
+    '/customer/{id}',
+    status_code=status.HTTP_204_NO_CONTENT,
+    response_model=None,
+    dependencies=[Depends(verify_api_key)],
+)
+async def delete_customer(id: int) -> None:
+    return await crud.delete_customer(id)

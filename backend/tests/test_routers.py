@@ -66,3 +66,25 @@ class TestRouters:
         assert response.status_code == status.HTTP_200_OK
         assert response.json()["id"] == created["id"]
         assert response.json()["email"] == "toto@gmail.com"
+
+    def test_delete_customer(self, client, monkeypatch):
+        monkeypatch.setattr(settings, "ADMIN_API_KEY", self.api_key)
+        created = client.post("/customers", json=self.customer_data()).json()
+
+        response = client.get(
+            f"/customer/{created['id']}",
+            headers={"X-API-Key": self.api_key},
+        )
+        assert response.status_code == status.HTTP_200_OK
+        
+        delete_response = client.delete(
+            f"/customer/{created['id']}",
+            headers={"X-API-Key": self.api_key},
+        )
+        assert delete_response.status_code == status.HTTP_204_NO_CONTENT
+
+        response_after_delete = client.get(
+            f"/customer/{created['id']}",
+            headers={"X-API-Key": self.api_key},
+        )
+        assert response_after_delete.status_code == status.HTTP_404_NOT_FOUND
