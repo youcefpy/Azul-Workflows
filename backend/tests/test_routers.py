@@ -1,8 +1,9 @@
 import pytest
-
 from backend.config import settings
-from fastapi import HTTPException, status
 from backend.routers import verify_api_key
+from fastapi import HTTPException, status
+
+
 class TestRouters:
     api_key = "test-admin-api-key"
     @staticmethod

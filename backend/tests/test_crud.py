@@ -62,6 +62,7 @@ class TestCrudCustomer:
         await delete_customer(customer.id)
         custo = await get_customers()
         assert len(custo) == 0
-
-
-        
+        with pytest.raises(HTTPException) as exec_info:
+            await get_customer(id=c.id)
+        assert exec_info.value.status_code == status.HTTP_404_NOT_FOUND
+        assert "Customer Not found" in exec_info.value.detail

@@ -51,27 +51,27 @@ def send_email_notification(customer: Customer, is_customer: bool) -> None:
     print(f"- Sending email to {customer.email}...")
 
     msg = MIMEMultipart()
-    msg['From'] = settings.SMTP_USERNAME
+    msg['From'] = str(settings.SMTP_USERNAME)
 
     if is_customer:
         msg['Subject'] = "Your AzulWorkFlows Request Has Been Received"
-        msg['To'] = customer.email
+        msg['To'] = str(customer.email)
         body = customer_email(customer)
     else:
         msg['Subject'] = f"New Customer: {customer.name}"
-        msg['To'] = settings.ADMIN_EMAIL
+        msg['To'] = str(settings.ADMIN_EMAIL)
         body = admin_email(customer)
 
     msg.attach(MIMEText(body, 'plain'))
 
     try:
-        with smtplib.SMTP(settings.SMTP_SERVER, settings.SMTP_PORT) as server:
+        with smtplib.SMTP(str(settings.SMTP_SERVER), int(settings.SMTP_PORT)) as server:
             server.starttls()
-            server.login(settings.SMTP_USERNAME, settings.SMTP_PASSWORD)
+            server.login(str(settings.SMTP_USERNAME), str(settings.SMTP_PASSWORD))
             server.send_message(msg)
         if is_customer:
             print(f"- Email sent to \"{customer.email}\".")
         else:
-            print(f"- Email sent to admin.")
+            print("- Email sent to admin.")
     except Exception as e:
         print("Error sending email:", e)
