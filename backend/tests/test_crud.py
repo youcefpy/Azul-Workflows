@@ -1,4 +1,6 @@
-from backend.crud import create_customer, get_customer, get_customers
+import pytest
+from backend.crud import create_customer, delete_customer, get_customer, get_customers
+from fastapi import HTTPException, status
 
 from .factories import CustomerFactory
 
@@ -36,3 +38,30 @@ class TestCrudCustomer:
         assert customer.email == data.email
         assert customer.phone_number == data.phone_number
 
+    async def test_customer_not_found(self,db):
+        id = 2144142214
+        with pytest.raises(HTTPException) as exec_info:
+            await get_customer(id=id)
+        assert exec_info.value.status_code == status.HTTP_404_NOT_FOUND
+        assert "Customer Not found" in exec_info.value.detail
+
+
+    async def test_delete_customer(self,db):
+        data = CustomerFactory()
+        
+        customer = await create_customer(data)
+        
+        customers = await get_customers()
+        
+        assert len(customers) == 1
+        c = await get_customer(customer.id)
+        assert c is not None
+        assert c.name == customer.name
+        assert c.id == customer.id
+        assert c.email == customer.email
+        await delete_customer(customer.id)
+        custo = await get_customers()
+        assert len(custo) == 0
+
+
+        

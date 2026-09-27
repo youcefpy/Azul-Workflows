@@ -1,5 +1,6 @@
 from collections.abc import Sequence
 
+from fastapi import HTTPException, status
 from sqlalchemy.future import select
 
 from backend.database import SessionLocal
@@ -26,4 +27,27 @@ async def get_customer(id: int) -> Customer | None:
         result = await session.execute(
             select(Customer).where(Customer.id==id)
             )
-        return result.scalar_one_or_none()
+        customer = result.scalar_one_or_none()
+        if customer is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Customer Not found",
+            )
+        return customer
+
+async def delete_customer(id:int) -> None:
+    async with SessionLocal() as session:
+        query = await session.execute(
+        select(Customer).where(Customer.id==id)
+        )
+        customer = query.scalar_one_or_none()
+
+        if customer is None : 
+            raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, 
+            detail="Customer Not found"
+            )
+        await session.delete(customer)
+        await session.commit()
+
+        
