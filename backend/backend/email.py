@@ -73,5 +73,5 @@ def send_email_notification(customer: Customer, is_customer: bool) -> None:
             print(f"- Email sent to \"{customer.email}\".")
         else:
             print("- Email sent to admin.")
-    except Exception as e:
+    except (smtplib.SMTPException, OSError) as e:
         print("Error sending email:", e)
