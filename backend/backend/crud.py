@@ -51,3 +51,5 @@ async def delete_customer(id:int) -> None:
         await session.commit()
 
         
+async def update_customer(id:int, costomer:Customer):
+    ...
