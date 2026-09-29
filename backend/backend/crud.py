@@ -51,5 +51,24 @@ async def delete_customer(id:int) -> None:
         await session.commit()
 
         
-async def update_customer(id:int, costomer:Customer):
-    ...
+async def update_customer(id:int, customer:Customer) -> Customer:
+    async with SessionLocal() as session:
+        query = await session.execute(
+        select(Customer).where(Customer.id==id)
+        )
+        cust = query.scalar_one_or_none()
+        if cust is None : 
+            raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, 
+            detail="Customer Not found"
+            )
+        customer_obj = Customer(**customer.model_dump())
+        cust.name = customer_obj.name
+        cust.email = customer_obj.email
+        cust.phone_number = customer_obj.phone_number
+        cust.company_name = customer_obj.company_name
+        cust.message = customer_obj.message
+        session.add(cust)
+        await session.commit()
+        await session.refresh(cust)
+        return cust
